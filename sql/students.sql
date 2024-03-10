@@ -38,15 +38,15 @@ CREATE TABLE subjects (
 );
 
 
--- Table: evaluations
-DROP TABLE IF EXISTS evaluations;
-CREATE TABLE evaluations (
+-- Table: grades
+DROP TABLE IF EXISTS grades;
+CREATE TABLE grades (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER,
     subject_id INTEGER,
     date_of DATE NOT NULL,
-    evaluation INTEGER NOT NULL,
-    CHECK (evaluation BETWEEN 1 AND 5),
+    grade INTEGER NOT NULL,
+    CHECK (grade BETWEEN 1 AND 5),
     FOREIGN KEY (student_id) REFERENCES students (id)
       ON DELETE CASCADE
       ON UPDATE CASCADE,

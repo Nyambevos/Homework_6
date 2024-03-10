@@ -53,17 +53,17 @@ def prepare_data(students, teachers, subjects) -> tuple:
     for subject in subjects:
         for_subjects.append((subject, randint(1, NUMBER_TEACHERS)))
 
-    for_evaluations = []
+    for_grades = []
 
     for student_id in range(1, NUMBER_STUDENTS + 1):
         for _ in range(randint(1, NUMBER_EVALUATIONS)):
-            evaluation_date = datetime(2023, randint(9, 12), randint(1, 30)).date()
-            for_evaluations.append((student_id, randint(1, NUMBER_SUBJECTS), evaluation_date, randint(1, 5)))
+            grade_date = datetime(2023, randint(9, 12), randint(1, 30)).date()
+            for_grades.append((student_id, randint(1, NUMBER_SUBJECTS), grade_date, randint(1, 5)))
 
-    return for_groups, for_students, for_teachers, for_subjects, for_evaluations
+    return for_groups, for_students, for_teachers, for_subjects, for_grades
 
 
-def insert_data_to_db(groups, students, teachers, subjects, evaluations) -> None:
+def insert_data_to_db(groups, students, teachers, subjects, grades) -> None:
     # Створимо з'єднання з нашою БД та отримаємо об'єкт курсору для маніпуляцій з даними
 
     with sqlite3.connect('students.db') as con:
@@ -92,12 +92,12 @@ def insert_data_to_db(groups, students, teachers, subjects, evaluations) -> None
 
         # Останньою заповнюємо таблицю із зарплатами
 
-        sql_to_evaluations = """INSERT INTO evaluations(student_id, subject_id, date_of, evaluation)
+        sql_to_grades = """INSERT INTO grades(student_id, subject_id, date_of, grade)
                                     VALUES (?, ?, ?, ?)"""
 
         # Вставляємо дані про зарплати
 
-        cur.executemany(sql_to_evaluations, evaluations)
+        cur.executemany(sql_to_grades, grades)
 
         # Фіксуємо наші зміни в БД
 
