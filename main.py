@@ -10,7 +10,7 @@ def execute_query(sql: str) -> list:
 
 def main():
     # читаємо файл зі скриптом для створення БД
-    with open('sql/query_7.sql', 'r') as f:
+    with open('sql/query_10.sql', 'r') as f:
         sql = f.read()
 
     print(execute_query(sql))
