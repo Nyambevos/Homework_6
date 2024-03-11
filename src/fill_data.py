@@ -1,16 +1,16 @@
-from datetime import datetime
-import faker
-from random import randint
+import logging
 import sqlite3
+import faker
+from datetime import datetime
+from random import randint
 
-NUMBER_STUDENTS = 50
-NUMBER_GROUPS = 3
-NUMBER_SUBJECTS = 8
-NUMBER_TEACHERS = 5
-NUMBER_EVALUATIONS = 20
+from src.config import *
 
 
-def generate_fake_data(number_students, number_teachers, number_subjects) -> tuple:
+def generate_fake_data(
+        number_students,
+        number_teachers,
+        number_subjects) -> tuple:
     fake_students = []  # тут зберігатимемо студентів
     fake_teachers = []  # тут зберігатимемо викладачів
     fake_subjects = []  # тут зберігатимемо предмети
@@ -58,7 +58,11 @@ def prepare_data(students, teachers, subjects) -> tuple:
     for student_id in range(1, NUMBER_STUDENTS + 1):
         for _ in range(randint(1, NUMBER_EVALUATIONS)):
             grade_date = datetime(2023, randint(9, 12), randint(1, 30)).date()
-            for_grades.append((student_id, randint(1, NUMBER_SUBJECTS), grade_date, randint(1, 5)))
+            for_grades.append(
+                (student_id,
+                 randint(1, NUMBER_SUBJECTS),
+                 grade_date,
+                 randint(1, 5)))
 
     return for_groups, for_students, for_teachers, for_subjects, for_grades
 
@@ -66,7 +70,7 @@ def prepare_data(students, teachers, subjects) -> tuple:
 def insert_data_to_db(groups, students, teachers, subjects, grades) -> None:
     # Створимо з'єднання з нашою БД та отримаємо об'єкт курсору для маніпуляцій з даними
 
-    with sqlite3.connect('students.db') as con:
+    with sqlite3.connect(DATABASE) as con:
 
         cur = con.cursor()
 
@@ -102,8 +106,11 @@ def insert_data_to_db(groups, students, teachers, subjects, grades) -> None:
         # Фіксуємо наші зміни в БД
 
         con.commit()
+        logging.info(f'Fake data is written to the {DATABASE} database')
+
 
 if __name__ == "__main__":
-    groups, students, teachers, subjects, evaluations = prepare_data(*generate_fake_data(NUMBER_STUDENTS, NUMBER_TEACHERS, NUMBER_SUBJECTS))
+    groups, students, teachers, subjects, evaluations = prepare_data(
+        *generate_fake_data(NUMBER_STUDENTS, NUMBER_TEACHERS, NUMBER_SUBJECTS))
 
     insert_data_to_db(groups, students, teachers, subjects, evaluations)
